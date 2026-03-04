@@ -64,8 +64,7 @@ COPY infinigen_requirements.txt /tmp/reqs.txt
 RUN CFLAGS="-I${BINCLUDE}" ${BPYTHON} -m pip install --no-cache-dir -r /tmp/reqs.txt || true
 RUN ${BPYTHON} -m pip install --no-cache-dir Pillow lpips pyyaml tqdm scipy matplotlib || true
 
-# Pre-download the HF model (16GB — cached in image so we never download again)
-RUN python3 -c "from transformers import AutoModelForVision2Seq; AutoModelForVision2Seq.from_pretrained('llava-hf/llama3-llava-next-8b-hf', torch_dtype='auto')" || true
-RUN python3 -c "from transformers import AutoProcessor; AutoProcessor.from_pretrained('llava-hf/llama3-llava-next-8b-hf')" || true
+# Model downloads at runtime on vast.ai (~5 min, cached after first run)
+# Not baked into image to stay under GHA disk limits
 
 WORKDIR /root/VLMaterial
